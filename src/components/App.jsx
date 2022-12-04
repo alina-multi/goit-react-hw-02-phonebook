@@ -1,7 +1,7 @@
 import { Component } from "react";
-import { nanoid } from 'nanoid';
+// import { FormEvent } from 'react';
 import ContactList from './ContactList/ContactList';
-import Form from './Form/Form';
+import Basic from './Form/Form';
 import Filter from "./Filter/Filter";
 
 
@@ -14,8 +14,21 @@ import Filter from "./Filter/Filter";
     {id: 'id-4', name: 'Annie Copeland', number: '227-91-26'},
   ],
   filter: '',
-  name: '', 
-  number: ''
+  
+ }
+
+ setNewContact = (newContact)=>{
+
+  this.setState({ contacts: [newContact, ...this.state.contacts] });
+  const isMatch = this.state.contacts.find(contact => contact.name === newContact.name)
+    
+     if (isMatch) { 
+       alert(`${newContact.name} is alredy in contacts`);
+       return;
+     }
+
+
+
  }
    
    handleChange = e => { 
@@ -27,19 +40,6 @@ import Filter from "./Filter/Filter";
      );    
    }
 
-   handleSubmit = e => {
-     e.preventDefault();
-
-    const isMatch = this.state.contacts.find(contact => contact.name === this.state.name)
-    
-     if (isMatch) { 
-       alert(`${this.state.name} is alredy in contacts`);
-       return;
-     }
-
-     this.setState({ contacts: [{  id: nanoid(),name: e.target.elements.name.value,  number:e.target.elements.number.value }, ...this.state.contacts] });
-     this.reset();
-   }
 
    handleFilter = (e) => { 
     const { value, name } = e.currentTarget;
@@ -63,21 +63,13 @@ import Filter from "./Filter/Filter";
    onDeleteButton = (contactID) => {
      this.setState((prevState) => ({ contacts: prevState.contacts.filter(contact => contact.id !== contactID) }))
    
-   
    }
 
-   reset = () => { 
-     this.setState(
-       {
-         name: "",
-         number: ""
-       });    
-   }
 
 
   render() { 
     return <div>
-      <Form onChange={this.handleChange} onSubmit={this.handleSubmit} name={this.state.name} tel={this.state.number}/>
+      <Basic setNewContact={this.setNewContact}/>
       <Filter contacts={this.state.contacts} filter={this.state.filter} onChange={this.handleFilter}/>
       <ContactList visibleContacts={this.contactsFilter} onDeleteButton={this.onDeleteButton}/>
     </div> 
